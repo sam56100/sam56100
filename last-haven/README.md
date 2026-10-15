@@ -6,6 +6,20 @@ Plan complet : [`docs/PLAN_INITIAL.md`](docs/PLAN_INITIAL.md) · État d'avancem
 **État actuel : Phase 1, jalons 1.0 et 1.1** — une arène de test et un personnage qui se déplace.
 Pas encore de tir, de loot ni de réseau.
 
+## Récupérer le projet sur ton PC (à faire AVANT d'ouvrir Godot)
+
+Le projet est sur GitHub, Godot ne peut importer que des fichiers présents sur ton ordinateur.
+
+**Sans Git (le plus simple) :**
+1. Dans ton navigateur (connecté à GitHub), ouvre <https://github.com/sam56100/sam56100>.
+2. Clique sur le menu des branches (écrit `main`) et choisis `claude/confident-euler-xvunds`.
+3. Bouton vert **Code** → **Download ZIP**.
+4. Dézippe le fichier, par exemple dans `C:\Projets\`. Le fichier à importer dans Godot est
+   `...\last-haven\project.godot` (dans le sous-dossier `last-haven`, **pas** à la racine du zip, où il n'y en a pas).
+
+**Avec Git (nécessaire plus tard pour Claude Code sur ton PC) :**
+`git clone --branch claude/confident-euler-xvunds https://github.com/sam56100/sam56100.git`
+
 ## Lancer le jeu (Windows)
 
 1. Installer **Godot 4** (édition standard, pas .NET) depuis <https://godotengine.org/download> et le dézipper
