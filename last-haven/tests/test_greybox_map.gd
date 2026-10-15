@@ -19,7 +19,7 @@ func test_map_builds_static_bodies_on_the_world_layer() -> void:
 	var bodies := _map.get_children().filter(func(node: Node) -> bool: return node is StaticBody3D)
 	assert_true(bodies.size() >= 20, "expected a populated arena, got %d bodies" % bodies.size())
 	for body in bodies:
-		assert_eq((body as StaticBody3D).collision_layer, GreyboxMap.WORLD_LAYER)
+		assert_eq((body as StaticBody3D).collision_layer, PhysicsLayers.WORLD)
 
 
 func test_spawn_is_inside_the_arena() -> void:

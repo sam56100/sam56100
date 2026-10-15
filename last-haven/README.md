@@ -39,6 +39,8 @@ fonctionner, mais si quelque chose casse, note la version exacte (elle s'affiche
 | Regarder | Souris (clic dans la fenêtre pour la capturer, **Échap** pour la libérer) |
 | Sprint | **Maj** (en avançant) |
 | S'accroupir (bascule) | **C** |
+| Viser (zoom, déplacement ralenti) | **Clic droit** maintenu |
+| Changer d'épaule (caméra) | **V** |
 | Sauter | **Espace** |
 | Overlay de debug (FPS, vitesse, état) | **F3** |
 

@@ -37,7 +37,7 @@ _Aucune pour l'instant._ Le jalon 1.1 attend ton playtest (voir la check-list du
 |---|---|---|---|
 | 1.0 | Squelette, outillage, scène de démarrage | 🟧 | Tout charge, le jeu tourne 120 images en headless sans erreur ni avertissement |
 | 1.1 | Arène greybox + marche / sprint / accroupi / saut + caméra épaule minimale | 🟧 **lancé, feeling pas encore jugé** | 15 tests de physique verts (vitesses, accroupi, passage sous la poutre, saut, atterrissage, orientation). **Lancé par toi sur Godot 4.7.2** (capture) : arène et personnage affichés, caméra par-dessus l'épaule (personnage décalé à gauche), 144 FPS (probablement plafonné par l'écran 144 Hz), au sol, position différente du point d'apparition donc le déplacement répond. **Pas encore jugé : le « poids » du mouvement, la fluidité, la caméra à l'usage, la poutre, la rampe.** Panneau Sortie non montré : erreurs/avertissements éventuels non confirmés. |
-| 1.2 | Caméra TPS complète (inversion d'épaule, zoom de visée) | ⬜ | Attend ton retour sur 1.1 |
+| 1.2 | Caméra TPS complète (inversion d'épaule, zoom de visée, déplacement en visée) | 🟧 **non joué** | Tests verts : zoom/FOV et rapprochement en visée, retour en vue normale, inversion d'épaule, déplacement plafonné et sprint bloqué en visée, corps orienté vers la caméra en visée, sensibilité réduite en visée, limites de tangage, recul qui se résorbe. **À juger en jouant : la sensation du zoom, la vitesse de transition, la sensibilité.** |
 | 1.3 | Arme hitscan, recul, rechargement | ⬜ | |
 | 1.4 | Santé / dégâts / cibles à zones | ⬜ | |
 | 1.5 | Caisse de loot + 3 composants | ⬜ | |

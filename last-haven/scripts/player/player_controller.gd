@@ -28,6 +28,7 @@ var _stand_probe: CapsuleShape3D
 
 
 func _ready() -> void:
+	InputActions.register()
 	if config == null:
 		config = MovementConfig.new()
 	_stand_probe = CapsuleShape3D.new()
@@ -47,7 +48,8 @@ func simulate(frame: InputFrame, delta: float) -> void:
 	var wish_direction := _wish_direction(frame)
 	_accelerate_horizontally(wish_direction * _target_speed(frame), delta)
 	_apply_vertical(frame, delta, not stance_changed_this_tick)
-	_face(wish_direction, delta)
+	_face(frame, wish_direction, delta)
+	_camera_rig.set_aiming(frame.aim_pressed)
 	move_and_slide()
 
 
@@ -67,11 +69,14 @@ func _read_local_input() -> InputFrame:
 	frame.sprint = Input.is_action_pressed(InputActions.SPRINT)
 	frame.jump_pressed = Input.is_action_just_pressed(InputActions.JUMP)
 	frame.crouch_toggle_pressed = Input.is_action_just_pressed(InputActions.CROUCH)
+	# Clicks only count while the mouse is captured, so the click that recaptures it is not a shot.
+	var mouse_captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
+	frame.aim_pressed = mouse_captured and Input.is_action_pressed(InputActions.AIM)
 	return frame
 
 
 func _wants_sprint(frame: InputFrame) -> bool:
-	return frame.sprint and frame.move.y > _MOVE_DEADZONE
+	return frame.sprint and frame.move.y > _MOVE_DEADZONE and not frame.aim_pressed
 
 
 ## Returns true if the stance changed this tick.
@@ -89,11 +94,14 @@ func _update_stance(frame: InputFrame) -> bool:
 
 
 func _target_speed(frame: InputFrame) -> float:
+	var speed := config.walk_speed
 	if stance == Stance.CROUCHING:
-		return config.crouch_speed
-	if _wants_sprint(frame):
-		return config.sprint_speed
-	return config.walk_speed
+		speed = config.crouch_speed
+	elif _wants_sprint(frame):
+		speed = config.sprint_speed
+	if frame.aim_pressed:
+		speed = minf(speed, config.aim_speed)
+	return speed
 
 
 ## Camera-relative movement direction on the ground plane, length <= 1.
@@ -125,7 +133,11 @@ func _apply_vertical(frame: InputFrame, delta: float, allow_jump: bool) -> void:
 		velocity.y = maxf(velocity.y - config.gravity * delta, -config.max_fall_speed)
 
 
-func _face(wish_direction: Vector3, delta: float) -> void:
+func _face(frame: InputFrame, wish_direction: Vector3, delta: float) -> void:
+	if frame.aim_pressed:
+		# Aiming: the body squares up to where the camera points (strafing stance).
+		rotation.y = lerp_angle(rotation.y, frame.aim_yaw, 1.0 - exp(-config.aim_turn_rate * delta))
+		return
 	if wish_direction.length_squared() < _MOVE_DEADZONE * _MOVE_DEADZONE:
 		return
 	var target_yaw := atan2(-wish_direction.x, -wish_direction.z)

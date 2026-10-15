@@ -9,6 +9,8 @@ extends Resource
 @export var walk_speed: float = 3.6
 @export var sprint_speed: float = 6.2
 @export var crouch_speed: float = 2.0
+## Maximum speed while aiming down sights (also caps crouch speed if lower).
+@export var aim_speed: float = 2.4
 
 @export_group("Acceleration (m/s²)")
 @export var ground_acceleration: float = 22.0
@@ -28,3 +30,5 @@ extends Resource
 @export var radius: float = 0.35
 ## How fast the body turns toward its movement direction (higher = snappier).
 @export var turn_rate: float = 12.0
+## How fast the body turns toward the camera direction while aiming.
+@export var aim_turn_rate: float = 20.0

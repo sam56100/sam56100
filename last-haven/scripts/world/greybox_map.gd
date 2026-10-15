@@ -7,7 +7,6 @@ extends Node3D
 ## Contains the shapes needed to judge movement: low cover (crouch height), high walls, a low beam
 ## (stand blocked, crouch passes), a ramp up to a platform, and scattered crates.
 
-const WORLD_LAYER := 1
 const ARENA_HALF_SIZE := 30.0
 const WALL_HEIGHT := 4.0
 const WALL_THICKNESS := 1.0
@@ -123,7 +122,7 @@ func _add_box(
 ) -> void:
 	var body := StaticBody3D.new()
 	body.name = box_name
-	body.collision_layer = WORLD_LAYER
+	body.collision_layer = PhysicsLayers.WORLD
 	body.collision_mask = 0
 	body.position = center
 	body.rotation_degrees = tilt_degrees

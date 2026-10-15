@@ -12,3 +12,5 @@ var aim_yaw: float = 0.0
 var sprint: bool = false
 var jump_pressed: bool = false
 var crouch_toggle_pressed: bool = false
+## Aim down sights (held).
+var aim_pressed: bool = false

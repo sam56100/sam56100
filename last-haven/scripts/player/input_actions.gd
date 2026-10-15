@@ -12,23 +12,36 @@ const MOVE_RIGHT := &"move_right"
 const SPRINT := &"sprint"
 const JUMP := &"jump"
 const CROUCH := &"crouch"
+const AIM := &"aim"
+const SHOULDER_SWAP := &"shoulder_swap"
 
 
 static func register() -> void:
-	_bind(MOVE_FORWARD, KEY_W)
-	_bind(MOVE_BACK, KEY_S)
-	_bind(MOVE_LEFT, KEY_A)
-	_bind(MOVE_RIGHT, KEY_D)
-	_bind(SPRINT, KEY_SHIFT)
-	_bind(JUMP, KEY_SPACE)
-	_bind(CROUCH, KEY_C)
+	_bind_key(MOVE_FORWARD, KEY_W)
+	_bind_key(MOVE_BACK, KEY_S)
+	_bind_key(MOVE_LEFT, KEY_A)
+	_bind_key(MOVE_RIGHT, KEY_D)
+	_bind_key(SPRINT, KEY_SHIFT)
+	_bind_key(JUMP, KEY_SPACE)
+	_bind_key(CROUCH, KEY_C)
+	_bind_key(SHOULDER_SWAP, KEY_V)
+	_bind_mouse(AIM, MOUSE_BUTTON_RIGHT)
 
 
-static func _bind(action: StringName, physical_keycode: Key) -> void:
+static func _bind_key(action: StringName, physical_keycode: Key) -> void:
 	# Respect actions already defined (e.g. in project.godot or a future rebinding menu).
 	if InputMap.has_action(action):
 		return
 	InputMap.add_action(action)
 	var event := InputEventKey.new()
 	event.physical_keycode = physical_keycode
+	InputMap.action_add_event(action, event)
+
+
+static func _bind_mouse(action: StringName, button: MouseButton) -> void:
+	if InputMap.has_action(action):
+		return
+	InputMap.add_action(action)
+	var event := InputEventMouseButton.new()
+	event.button_index = button
 	InputMap.action_add_event(action, event)

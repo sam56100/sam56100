@@ -133,6 +133,37 @@ func test_body_turns_toward_movement_direction() -> void:
 	assert_almost_eq(_player.rotation.y, -PI / 2.0, 0.05)
 
 
+func test_aiming_caps_walking_speed() -> void:
+	var frame := _forward(false)
+	frame.aim_pressed = true
+	await _hold(frame, 60)
+	assert_almost_eq(_player.horizontal_speed(), _player.config.aim_speed, 0.05)
+	assert_true(_player.config.aim_speed < _player.config.walk_speed)
+
+
+func test_cannot_sprint_while_aiming() -> void:
+	var frame := _forward(true)
+	frame.aim_pressed = true
+	await _hold(frame, 60)
+	assert_almost_eq(_player.horizontal_speed(), _player.config.aim_speed, 0.05)
+
+
+func test_body_squares_up_to_camera_while_aiming() -> void:
+	var frame := InputFrame.new()
+	frame.aim_pressed = true
+	frame.aim_yaw = PI / 2.0
+	await _hold(frame, 60)
+	assert_almost_eq(_player.rotation.y, PI / 2.0, 0.05, "should face the camera direction")
+
+
+func test_body_keeps_facing_the_camera_when_strafing_in_aim() -> void:
+	var frame := InputFrame.new()
+	frame.aim_pressed = true
+	frame.move = Vector2(1.0, 0.0)  # strafe right, camera facing -Z
+	await _hold(frame, 60)
+	assert_almost_eq(_player.rotation.y, 0.0, 0.05, "strafing in aim must not turn the body")
+
+
 func _forward(sprint: bool) -> InputFrame:
 	var frame := InputFrame.new()
 	frame.move = Vector2(0.0, 1.0)
