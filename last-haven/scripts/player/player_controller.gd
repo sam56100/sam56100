@@ -28,7 +28,10 @@ var stance: Stance = Stance.STANDING
 var weapon: WeaponController
 var health: HealthComponent
 var inventory := ComponentInventory.new()
+var items := ItemInventory.new()
 var interactor: PlayerInteractor
+var crafter: Crafter
+var item_user: ItemUser
 
 var _stand_probe: CapsuleShape3D
 ## Only one timed action (opening, later crafting/healing) can run at a time.
@@ -51,6 +54,7 @@ func _ready() -> void:
 	_create_health()
 	_create_weapon()
 	_create_interactor()
+	_create_crafting()
 	_apply_stance_shape()
 
 
@@ -74,6 +78,8 @@ func simulate(input: InputFrame, delta: float) -> void:
 	move_and_slide()
 	weapon.tick(frame, delta)
 	interactor.tick(frame, delta)
+	crafter.tick(frame, delta)
+	item_user.tick(frame, delta)
 
 
 func horizontal_speed() -> float:
@@ -135,6 +141,11 @@ func _read_local_input() -> InputFrame:
 	frame.fire_pressed = mouse_captured and Input.is_action_pressed(InputActions.FIRE)
 	frame.reload_pressed = Input.is_action_just_pressed(InputActions.RELOAD)
 	frame.interact_held = Input.is_action_pressed(InputActions.INTERACT)
+	frame.craft_menu_held = Input.is_action_pressed(InputActions.CRAFT_MENU)
+	frame.use_heal_pressed = Input.is_action_just_pressed(InputActions.USE_HEAL)
+	for slot in range(1, InputActions.CRAFT_SLOT_COUNT + 1):
+		if Input.is_action_just_pressed(InputActions.craft_slot(slot)):
+			frame.craft_select = slot
 	frame.debug_damage_pressed = (
 		OS.is_debug_build() and Input.is_action_just_pressed(InputActions.DEBUG_DAMAGE)
 	)
@@ -283,6 +294,17 @@ func _set_dead_pose(dead: bool) -> void:
 
 func _on_hit_confirmed(info: HitInfo) -> void:
 	DamageNumber.spawn(get_parent(), info)
+
+
+func _create_crafting() -> void:
+	crafter = Crafter.new()
+	crafter.name = "Crafter"
+	add_child(crafter)
+	crafter.setup(self)
+	item_user = ItemUser.new()
+	item_user.name = "ItemUser"
+	add_child(item_user)
+	item_user.setup(self)
 
 
 func _create_interactor() -> void:

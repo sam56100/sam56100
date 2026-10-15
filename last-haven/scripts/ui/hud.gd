@@ -20,6 +20,9 @@ var _prompt_label: Label
 var _action_label: Label
 var _action_bar: ActionBar
 var _toast_label: Label
+var _craft_panel: CraftPanel
+var _items_label: Label
+var _craft_hint_label: Label
 var _toast_time_left: float = 0.0
 
 
@@ -71,6 +74,19 @@ func _ready() -> void:
 	_action_bar.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 	_place(_action_bar, -110.0, 110.0, 156.0, 164.0)
 
+	_craft_panel = CraftPanel.new()
+	_craft_panel.name = "CraftPanel"
+	add_child(_craft_panel)
+	_craft_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	_place(_craft_panel, -260.0, 260.0, -190.0, -104.0)
+
+	_craft_hint_label = _make_label("CraftHintLabel", 14, Control.PRESET_CENTER_BOTTOM)
+	_craft_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(_craft_hint_label, -200.0, 200.0, -122.0, -100.0)
+
+	_items_label = _make_label("ItemsLabel", 20, Control.PRESET_BOTTOM_LEFT)
+	_place(_items_label, _MARGIN, 300.0, -104.0, -76.0)
+
 	_toast_label = _make_label("ToastLabel", 24, Control.PRESET_CENTER_TOP)
 	_toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(_toast_label, -300.0, 300.0, 70.0, 104.0)
@@ -92,6 +108,7 @@ func refresh() -> void:
 	_refresh_weapon()
 	_refresh_health()
 	_refresh_interaction()
+	_refresh_crafting()
 	_component_bar.refresh(target.inventory)
 
 
@@ -117,6 +134,14 @@ func get_health_text() -> String:
 
 func get_component_bar() -> ComponentBar:
 	return _component_bar
+
+
+func get_craft_panel() -> CraftPanel:
+	return _craft_panel
+
+
+func get_items_text() -> String:
+	return _items_label.text
 
 
 func get_prompt_text() -> String:
@@ -168,11 +193,29 @@ func _refresh_health() -> void:
 
 func _refresh_interaction() -> void:
 	var interactor := target.interactor
-	var busy := interactor.is_interacting()
-	_prompt_label.text = tr(interactor.get_prompt()) if interactor.has_target() and not busy else ""
-	_action_label.text = tr("Opening") if busy else ""
-	_action_bar.progress = interactor.progress()
-	_action_bar.visible = busy
+	var action_text := ""
+	var progress := 0.0
+	if target.crafter.is_crafting():
+		action_text = "%s: %s" % [tr("Crafting"), tr(target.crafter.current_recipe.display_name)]
+		progress = target.crafter.progress()
+	elif target.item_user.is_using():
+		action_text = tr("Healing")
+		progress = target.item_user.progress()
+	elif interactor.is_interacting():
+		action_text = tr("Opening")
+		progress = interactor.progress()
+	_action_label.text = action_text
+	_action_bar.progress = progress
+	_action_bar.visible = action_text != ""
+	var show_prompt := interactor.has_target() and action_text == ""
+	_prompt_label.text = tr(interactor.get_prompt()) if show_prompt else ""
+
+
+func _refresh_crafting() -> void:
+	_craft_panel.refresh(target.crafter.recipes, target.inventory, target.crafter.menu_open)
+	var kits := target.items.count(CraftedItem.Kind.HEAL_KIT)
+	_items_label.text = "%s x%d  [H]" % [tr("Heal kit"), kits] if kits > 0 else ""
+	_craft_hint_label.text = tr("Hold [Tab] to craft") if not target.crafter.menu_open else ""
 
 
 func _on_loot_collected(loot: Dictionary) -> void:

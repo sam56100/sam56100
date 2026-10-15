@@ -19,5 +19,10 @@ var fire_pressed: bool = false
 var reload_pressed: bool = false
 ## Interact key held (open crates, ...).
 var interact_held: bool = false
+## Crafting menu key held.
+var craft_menu_held: bool = false
+## Recipe slot (1-5) pressed this tick while the menu is open; 0 = none.
+var craft_select: int = 0
+var use_heal_pressed: bool = false
 ## Debug builds only: hurts the player to test healing and death.
 var debug_damage_pressed: bool = false

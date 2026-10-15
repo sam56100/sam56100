@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Recipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/crafting/recipe.gd" id="1_recipe"]
+
+[resource]
+script = ExtResource("1_recipe")
+display_name = "Heal kit"
+component_a = 1
+component_b = 0
+result = 0
+craft_seconds = 1.5

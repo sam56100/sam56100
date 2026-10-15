@@ -25,6 +25,7 @@ Document vivant : il décrit ce qui **existe**, pas ce qui est prévu (le prévu
 | `scripts/combat/health_component.gd`, `damage_zone.gd`, `damage_calculator.gd`, `hit_info.gd` | Points de vie, zones du corps et règle unique de calcul des dégâts |
 | `scripts/combat/hit_zone.gd`, `training_dummy.gd`, `damage_number.gd` | Volumes de touche simples (tête / torse / membres, couche « hitboxes »), cible d'entraînement, chiffres flottants |
 | `scripts/loot/*` + `data/loot/crate_basic.tres` | Les 6 composants, table de loot pondérée (donnée), inventaire sans poids, action chronométrée, objets interactifs et caisse |
+| `scripts/crafting/*` + `data/recipes/heal_kit.tres` | Recettes à 2 composants (donnée), fabrication chronométrée et interruptible, inventaire d'objets, utilisation du kit de soin |
 | `scripts/player/player_interactor.gd` | Trouve l'objet le plus proche et gère l'action « maintenir pour utiliser » (une seule action à la fois) |
 | `scripts/combat/shot_effects.gd` | Tracé et impact **purement visuels** |
 | `scripts/ui/hud.gd`, `scripts/ui/crosshair.gd` | HUD (muet : il lit l'état du joueur) et réticule dynamique |

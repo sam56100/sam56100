@@ -42,6 +42,8 @@ fonctionner, mais si quelque chose casse, note la version exacte (elle s'affiche
 | Viser (zoom, déplacement ralenti) | **Clic droit** maintenu |
 | Tirer | **Clic gauche** (maintenu : tir automatique) |
 | Ouvrir une caisse | **E** maintenu (≈ 0,8 s) près d'une caisse |
+| Menu de fabrication | **Tab** maintenu, puis **1** pour le kit de soin (≈ 1,5 s) |
+| Utiliser un kit de soin | **H** (≈ 1,2 s, +60 PV) |
 | Recharger | **R** (rechargement automatique quand le chargeur est vide) |
 | Changer d'épaule (caméra) | **V** |
 | Se blesser (test, version de développement) | **K** (-30 PV) |

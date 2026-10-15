@@ -175,6 +175,52 @@ func test_a_toast_announces_the_loot_in_french() -> void:
 	assert_true(toast.contains("+1 Alcool"), toast)
 
 
+func test_craft_panel_is_hidden_until_the_menu_key_is_held() -> void:
+	_hud.refresh()
+	assert_false(_hud.get_craft_panel().visible)
+	_frame.craft_menu_held = true
+	await _frames(2)
+	_hud.refresh()
+	assert_true(_hud.get_craft_panel().visible)
+
+
+func test_craft_panel_lists_the_recipe_in_french_and_dims_it_when_unaffordable() -> void:
+	_frame.craft_menu_held = true
+	await _frames(2)
+	_hud.refresh()
+	assert_eq(_hud.get_craft_panel().get_line_text(0), "[1] Kit de soin: Chiffon + Alcool")
+	assert_true(_hud.get_craft_panel().is_line_dimmed(0))
+	_player.inventory.add(CraftComponent.Type.RAG, 1)
+	_player.inventory.add(CraftComponent.Type.ALCOHOL, 1)
+	_hud.refresh()
+	assert_false(_hud.get_craft_panel().is_line_dimmed(0))
+
+
+func test_heal_kit_count_is_shown_with_its_key() -> void:
+	_hud.refresh()
+	assert_eq(_hud.get_items_text(), "")
+	_player.items.add(CraftedItem.Kind.HEAL_KIT, 2)
+	_hud.refresh()
+	assert_eq(_hud.get_items_text(), "Kit de soin x2  [H]")
+
+
+func test_crafting_and_healing_show_their_progress() -> void:
+	_player.inventory.add(CraftComponent.Type.RAG, 1)
+	_player.inventory.add(CraftComponent.Type.ALCOHOL, 1)
+	_player.crafter.begin(_player.crafter.recipes[0])
+	await _frames(20)
+	_hud.refresh()
+	assert_eq(_hud.get_action_text(), "Fabrication: Kit de soin")
+	assert_true(_hud.get_action_progress() > 0.0)
+	_player.crafter.cancel()
+	_player.items.add(CraftedItem.Kind.HEAL_KIT)
+	_player.health.take_damage(30)
+	_player.item_user.begin_heal()
+	await _frames(20)
+	_hud.refresh()
+	assert_eq(_hud.get_action_text(), "Soin en cours")
+
+
 func _frames(count: int) -> void:
 	for i in count:
 		await tree.physics_frame

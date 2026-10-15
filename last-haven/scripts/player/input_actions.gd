@@ -16,6 +16,9 @@ const AIM := &"aim"
 const FIRE := &"fire"
 const RELOAD := &"reload"
 const INTERACT := &"interact"
+const CRAFT_MENU := &"craft_menu"
+const USE_HEAL := &"use_heal"
+const CRAFT_SLOT_COUNT := 5
 const SHOULDER_SWAP := &"shoulder_swap"
 const DEBUG_DAMAGE := &"debug_damage"
 
@@ -30,11 +33,20 @@ static func register() -> void:
 	_bind_key(CROUCH, KEY_C)
 	_bind_key(RELOAD, KEY_R)
 	_bind_key(INTERACT, KEY_E)
+	_bind_key(CRAFT_MENU, KEY_TAB)
+	_bind_key(USE_HEAL, KEY_H)
+	for slot in range(1, CRAFT_SLOT_COUNT + 1):
+		_bind_key(craft_slot(slot), (KEY_0 + slot) as Key)
 	_bind_key(SHOULDER_SWAP, KEY_V)
 	_bind_mouse(AIM, MOUSE_BUTTON_RIGHT)
 	_bind_mouse(FIRE, MOUSE_BUTTON_LEFT)
 	if OS.is_debug_build():
 		_bind_key(DEBUG_DAMAGE, KEY_K)
+
+
+## Action name of crafting menu slot 1..5 (the number keys 1-5).
+static func craft_slot(slot: int) -> StringName:
+	return StringName("craft_slot_%d" % slot)
 
 
 static func _bind_key(action: StringName, physical_keycode: Key) -> void:

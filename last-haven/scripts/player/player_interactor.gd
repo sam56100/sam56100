@@ -16,8 +16,12 @@ func setup(player: PlayerController) -> void:
 
 func tick(frame: InputFrame, delta: float) -> void:
 	_target = _find_target()
-	var interrupted := frame.fire_pressed or frame.jump_pressed
-	if _target == null or not frame.interact_held or interrupted or _player.is_dead():
+	if (
+		_target == null
+		or not frame.interact_held
+		or ActionInterrupts.breaks(frame)
+		or _player.is_dead()
+	):
 		_cancel()
 		return
 	if _action.active and _target != _active_target:
