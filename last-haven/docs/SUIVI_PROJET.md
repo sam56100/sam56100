@@ -27,15 +27,16 @@ _Aucune pour l'instant._ Le jalon 1.1 attend ton playtest (voir la check-list du
 | Format + lint GDScript (`gdtoolkit`) | 🟧 |
 | Tests headless (runner maison, tests de physique) | 🟧 |
 | `tools/check.py` — une commande pour tout vérifier | 🟧 testé aussi **en l'altérant volontairement** (erreur de syntaxe, régression de logique, scène cassée : détectés) |
-| Installation de Godot, Git, Claude Code et `gdtoolkit` sur ta machine Windows | ⏳ **à faire par toi** (README + plan §7) |
-| Épingler la version exacte de Godot que tu utilises | ⏳ à faire quand tu l'auras installée |
+| Installation de Godot sur ta machine Windows | ✅ Godot 4.7.2 installé, projet importé et lancé |
+| Installation de Git, Claude Code et `gdtoolkit` sur ta machine Windows | ⏳ à faire plus tard (inutile pour simplement jouer au prototype ; évitera de retélécharger un ZIP à chaque mise à jour) |
+| Épingler la version exacte de Godot | ✅ **Godot 4.7.2 stable officielle** (v4.7.2.stable.official, visible dans le gestionnaire de projets et l'overlay F3) |
 
 ## Phase 1 — Vertical slice solo
 
 | Jalon | Contenu | Statut | Ce qui est vérifié / ce qui reste |
 |---|---|---|---|
 | 1.0 | Squelette, outillage, scène de démarrage | 🟧 | Tout charge, le jeu tourne 120 images en headless sans erreur ni avertissement |
-| 1.1 | Arène greybox + marche / sprint / accroupi / saut + caméra épaule minimale | 🟧 **non joué** | 15 tests de physique verts (vitesses, accroupi, passage sous la poutre, saut, atterrissage, orientation). **Non vérifié : le rendu, la caméra, le « poids » du mouvement, les saccades** |
+| 1.1 | Arène greybox + marche / sprint / accroupi / saut + caméra épaule minimale | 🟧 **lancé, feeling pas encore jugé** | 15 tests de physique verts (vitesses, accroupi, passage sous la poutre, saut, atterrissage, orientation). **Lancé par toi sur Godot 4.7.2** (capture) : arène et personnage affichés, caméra par-dessus l'épaule (personnage décalé à gauche), 144 FPS (probablement plafonné par l'écran 144 Hz), au sol, position différente du point d'apparition donc le déplacement répond. **Pas encore jugé : le « poids » du mouvement, la fluidité, la caméra à l'usage, la poutre, la rampe.** Panneau Sortie non montré : erreurs/avertissements éventuels non confirmés. |
 | 1.2 | Caméra TPS complète (inversion d'épaule, zoom de visée) | ⬜ | Attend ton retour sur 1.1 |
 | 1.3 | Arme hitscan, recul, rechargement | ⬜ | |
 | 1.4 | Santé / dégâts / cibles à zones | ⬜ | |
@@ -66,7 +67,7 @@ _Aucune pour l'instant._ Le jalon 1.1 attend ton playtest (voir la check-list du
 | D7 | Configuration machine du développeur | ✅ (captures du Gestionnaire des tâches) **CPU AMD Ryzen 7 5700X** (8 cœurs / 16 threads, ~4,5 GHz) · **RAM 31,9 Go DDR4 à 2133 MHz** (2 barrettes sur 4 emplacements) · **GPU NVIDIA GeForce RTX (modèle exact tronqué sur les captures), 8 Go de VRAM dédiée**, SSD NVMe, Windows. Conséquence : rendu Forward+ conservé, seuil minimal **60 FPS stables en 1080p** (largement à portée pour une arène greybox ; à relever après mesures). Note : sur les captures le GPU était déjà à ~90 % en 3D avec sa VRAM pleine, donc **fermer les autres applications lourdes avant de mesurer des FPS**. |
 | D8 | Recettes et composants de départ (Chiffon, Alcool, Lame en Phase 1) | ✅ validée |
 | D9 | **Nouveau** — Runner de tests maison au lieu de GUT (GUT non téléchargeable ni vérifiable dans l'environnement initial, runner sans dépendance) | ✅ appliquée, réévaluable |
-| D10 | **Nouveau** — Vérification automatique faite avec Godot **4.4.1** headless (paquet Ubuntu, `tools/setup_godot_linux.sh`) ; ta version installée peut être plus récente | ⚠️ à garder en tête si un comportement diffère |
+| D10 | **Nouveau** — Vérification automatique faite avec Godot **4.4.1** headless (paquet Ubuntu, `tools/setup_godot_linux.sh`). Ta version est la **4.7.2** : le projet s'y lance (converti automatiquement), mais les tests automatiques n'ont **pas** été exécutés sur la 4.7.2 | ⚠️ écart de version connu ; on garde `config/features` en 4.4 dans le dépôt pour l'instant |
 
 ## Limites connues de l'environnement de développement cloud
 
