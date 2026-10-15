@@ -63,7 +63,7 @@ _Aucune pour l'instant._ Le jalon 1.1 attend ton playtest (voir la check-list du
 | D4 | Pas de collision joueur↔joueur en MVP | ✅ validée |
 | D5 | Sauvegarde du camp locale en MVP | ✅ validée |
 | D6 | Code en anglais, textes en français (traduction Godot) | ✅ validée |
-| D7 | Configuration machine du développeur | ✅ GPU dédié 8 Go de VRAM ; RAM ≈ 32 Go (17 Go utilisés + 14,1 Go disponibles, total déduit) ; modèle de CPU et de GPU inconnus. Conséquence : rendu Forward+ conservé, seuil minimal fixé à **60 FPS stables en 1080p**. À affiner quand un playtest donnera des FPS réels. |
+| D7 | Configuration machine du développeur | ✅ (captures du Gestionnaire des tâches) **CPU AMD Ryzen 7 5700X** (8 cœurs / 16 threads, ~4,5 GHz) · **RAM 31,9 Go DDR4 à 2133 MHz** (2 barrettes sur 4 emplacements) · **GPU NVIDIA GeForce RTX (modèle exact tronqué sur les captures), 8 Go de VRAM dédiée**, SSD NVMe, Windows. Conséquence : rendu Forward+ conservé, seuil minimal **60 FPS stables en 1080p** (largement à portée pour une arène greybox ; à relever après mesures). Note : sur les captures le GPU était déjà à ~90 % en 3D avec sa VRAM pleine, donc **fermer les autres applications lourdes avant de mesurer des FPS**. |
 | D8 | Recettes et composants de départ (Chiffon, Alcool, Lame en Phase 1) | ✅ validée |
 | D9 | **Nouveau** — Runner de tests maison au lieu de GUT (GUT non téléchargeable ni vérifiable dans l'environnement initial, runner sans dépendance) | ✅ appliquée, réévaluable |
 | D10 | **Nouveau** — Vérification automatique faite avec Godot **4.4.1** headless (paquet Ubuntu, `tools/setup_godot_linux.sh`) ; ta version installée peut être plus récente | ⚠️ à garder en tête si un comportement diffère |
