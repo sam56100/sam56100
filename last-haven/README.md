@@ -43,6 +43,7 @@ fonctionner, mais si quelque chose casse, note la version exacte (elle s'affiche
 | Tirer | **Clic gauche** (maintenu : tir automatique) |
 | Recharger | **R** (rechargement automatique quand le chargeur est vide) |
 | Changer d'épaule (caméra) | **V** |
+| Se blesser (test, version de développement) | **K** (-30 PV) |
 | Sauter | **Espace** |
 | Overlay de debug (FPS, vitesse, état) | **F3** |
 

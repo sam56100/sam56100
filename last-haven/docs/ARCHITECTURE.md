@@ -22,6 +22,8 @@ Document vivant : il décrit ce qui **existe**, pas ce qui est prévu (le prévu
 | `scripts/combat/weapon_data.gd` + `data/weapons/assault_rifle.tres` | Caractéristiques d'une arme (dégâts, cadence, chargeur, dispersion, recul) |
 | `scripts/combat/weapon_state.gd` | Logique d'arme **pure** (munitions, cadence, rechargement, dispersion), sans nœud ni physique : déterministe et testable |
 | `scripts/combat/weapon_controller.gd` | Transforme l'intention en tirs : rayon caméra puis rayon depuis le canon (la balle ne traverse pas ce que la caméra survole) |
+| `scripts/combat/health_component.gd`, `damage_zone.gd`, `damage_calculator.gd`, `hit_info.gd` | Points de vie, zones du corps et règle unique de calcul des dégâts |
+| `scripts/combat/hit_zone.gd`, `training_dummy.gd`, `damage_number.gd` | Volumes de touche simples (tête / torse / membres, couche « hitboxes »), cible d'entraînement, chiffres flottants |
 | `scripts/combat/shot_effects.gd` | Tracé et impact **purement visuels** |
 | `scripts/ui/hud.gd`, `scripts/ui/crosshair.gd` | HUD (muet : il lit l'état du joueur) et réticule dynamique |
 | `scripts/core/localization.gd` | Textes français (clés anglaises dans le code, `tr()`) |

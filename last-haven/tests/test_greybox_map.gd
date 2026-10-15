@@ -39,3 +39,12 @@ func test_spawn_has_ground_below_and_free_space_above() -> void:
 	assert_false(hit_below.is_empty(), "no ground under the spawn")
 	var up := PhysicsRayQueryParameters3D.create(origin, origin + Vector3.UP * 5.0)
 	assert_true(space.intersect_ray(up).is_empty(), "something blocks the spawn from above")
+
+
+func test_training_range_has_shootable_dummies() -> void:
+	var dummies := _map.get_children().filter(
+		func(node: Node) -> bool: return node is TrainingDummy
+	)
+	assert_true(dummies.size() >= 5, "expected a training range, got %d dummies" % dummies.size())
+	for dummy in dummies:
+		assert_false((dummy as TrainingDummy).is_dead())

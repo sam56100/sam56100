@@ -16,6 +16,7 @@ const _CAMERA_HEIGHT_RATIO := 0.88
 ## Muzzle / gun height as a fraction of the body height (standing 1.8 m -> 1.3 m).
 const _MUZZLE_HEIGHT_RATIO := 0.72
 const _MUZZLE_OFFSET := Vector2(0.28, -0.75)
+const _DEBUG_DAMAGE := 30
 
 @export var config: MovementConfig
 
@@ -23,6 +24,7 @@ const _MUZZLE_OFFSET := Vector2(0.28, -0.75)
 var input_override: InputFrame = null
 var stance: Stance = Stance.STANDING
 var weapon: WeaponController
+var health: HealthComponent
 
 var _stand_probe: CapsuleShape3D
 var _muzzle: Marker3D
@@ -40,6 +42,7 @@ func _ready() -> void:
 	_stand_probe = CapsuleShape3D.new()
 	_stand_probe.radius = config.radius
 	_stand_probe.height = config.stand_height - 2.0 * _STAND_PROBE_MARGIN
+	_create_health()
 	_create_weapon()
 	_apply_stance_shape()
 
@@ -50,7 +53,11 @@ func _physics_process(delta: float) -> void:
 
 
 ## Advances the player by one physics tick from the given intent.
-func simulate(frame: InputFrame, delta: float) -> void:
+func simulate(input: InputFrame, delta: float) -> void:
+	if input.debug_damage_pressed and OS.is_debug_build():
+		health.take_damage(_DEBUG_DAMAGE)
+	# A dead player ignores all input but keeps obeying gravity and friction.
+	var frame := _idle_frame(input.aim_yaw) if health.is_dead() else input
 	var stance_changed_this_tick := _update_stance(frame)
 	var wish_direction := _wish_direction(frame)
 	_accelerate_horizontally(wish_direction * _target_speed(frame), delta)
@@ -67,6 +74,20 @@ func horizontal_speed() -> float:
 
 func get_camera() -> Camera3D:
 	return _camera_rig.get_camera()
+
+
+func is_dead() -> bool:
+	return health.is_dead()
+
+
+## Brings the player back at full health and ammo, standing, at the given world transform.
+func respawn(at: Transform3D) -> void:
+	health.reset()
+	global_transform = at
+	velocity = Vector3.ZERO
+	stance = Stance.STANDING
+	weapon.refill()
+	_set_dead_pose(false)
 
 
 func _read_local_input() -> InputFrame:
@@ -86,6 +107,15 @@ func _read_local_input() -> InputFrame:
 	frame.aim_pressed = mouse_captured and Input.is_action_pressed(InputActions.AIM)
 	frame.fire_pressed = mouse_captured and Input.is_action_pressed(InputActions.FIRE)
 	frame.reload_pressed = Input.is_action_just_pressed(InputActions.RELOAD)
+	frame.debug_damage_pressed = (
+		OS.is_debug_build() and Input.is_action_just_pressed(InputActions.DEBUG_DAMAGE)
+	)
+	return frame
+
+
+func _idle_frame(aim_yaw: float) -> InputFrame:
+	var frame := InputFrame.new()
+	frame.aim_yaw = aim_yaw
 	return frame
 
 
@@ -201,6 +231,32 @@ func _apply_stance_shape() -> void:
 	_gun_mesh.position = Vector3(_MUZZLE_OFFSET.x, muzzle_height - 0.05, _MUZZLE_OFFSET.y * 0.55)
 
 
+func _create_health() -> void:
+	health = HealthComponent.new()
+	health.name = "Health"
+	add_child(health)
+	health.died.connect(_on_died)
+
+
+func _on_died() -> void:
+	_set_dead_pose(true)
+
+
+## Cosmetic: lays the placeholder body down when dead and stands it up again.
+func _set_dead_pose(dead: bool) -> void:
+	_gun_mesh.visible = not dead
+	if dead:
+		_body_mesh.rotation.x = -PI / 2.0
+		_body_mesh.position.y = config.radius
+	else:
+		_body_mesh.rotation.x = 0.0
+		_apply_stance_shape()
+
+
+func _on_hit_confirmed(info: HitInfo) -> void:
+	DamageNumber.spawn(get_parent(), info)
+
+
 func _create_weapon() -> void:
 	_muzzle = Marker3D.new()
 	_muzzle.name = "Muzzle"
@@ -223,6 +279,7 @@ func _create_weapon() -> void:
 	weapon.aim_ray_provider = _camera_rig.get_aim_ray
 	weapon.recoil_kick.connect(_camera_rig.add_recoil)
 	weapon.shot_fired.connect(_on_shot_fired)
+	weapon.hit_confirmed.connect(_on_hit_confirmed)
 
 
 func _on_shot_fired(result: ShotResult) -> void:

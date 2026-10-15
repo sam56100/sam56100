@@ -35,6 +35,7 @@ func _ready() -> void:
 	_build_low_beam()
 	_build_ramp_and_platform()
 	_build_crates()
+	_build_training_range()
 
 
 ## Where the player starts: south edge of the arena, facing north (-Z).
@@ -115,6 +116,23 @@ func _build_crates() -> void:
 	_add_box("Crate4", Vector3(-14.0, 0.75, 20.0), Vector3(1.5, 1.5, 1.5), CRATE_COLOR)
 	_add_box("Crate5", Vector3(-3.0, 0.5, -22.0), Vector3(2.0, 1.0, 1.0), CRATE_COLOR)
 	_add_box("Crate6", Vector3(8.0, 0.5, -24.0), Vector3(1.0, 1.0, 2.0), CRATE_COLOR)
+
+
+## Shooting targets at various distances; some sit behind the low cover to test aiming over it.
+func _build_training_range() -> void:
+	var spots := [
+		Vector3(-4.0, 0.0, 16.0),
+		Vector3(4.0, 0.0, 16.0),
+		Vector3(-2.0, 0.0, 9.0),
+		Vector3(6.0, 0.0, 8.0),
+		Vector3(-12.0, 0.0, 8.0),
+		Vector3(-3.0, 0.0, -14.0),
+	]
+	for i in spots.size():
+		var dummy := TrainingDummy.new()
+		dummy.name = "Dummy%d" % (i + 1)
+		dummy.position = spots[i] as Vector3
+		add_child(dummy)
 
 
 func _add_box(

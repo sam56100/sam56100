@@ -10,6 +10,7 @@ const FRENCH: Dictionary = {
 	"Assault rifle": "Fusil d'assaut",
 	"Reloading": "Rechargement",
 	"Empty": "Vide",
+	"Eliminated": "Éliminé",
 }
 
 static var _installed: bool = false

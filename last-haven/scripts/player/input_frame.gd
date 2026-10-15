@@ -17,3 +17,5 @@ var aim_pressed: bool = false
 ## Trigger held down.
 var fire_pressed: bool = false
 var reload_pressed: bool = false
+## Debug builds only: hurts the player to test healing and death.
+var debug_damage_pressed: bool = false

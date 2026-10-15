@@ -8,6 +8,8 @@ extends Node
 ## that the camera merely peeks over.
 
 signal shot_fired(result: ShotResult)
+## A bullet hurt something. Emitted after [signal shot_fired].
+signal hit_confirmed(info: HitInfo)
 ## Camera kick requested by a shot (degrees up, degrees sideways).
 signal recoil_kick(pitch_degrees: float, yaw_degrees: float)
 
@@ -74,6 +76,23 @@ func _fire() -> void:
 	var result := _trace(ray.origin, direction)
 	recoil_kick.emit(data.recoil_pitch, rng.randf_range(-data.recoil_yaw, data.recoil_yaw))
 	shot_fired.emit(result)
+	_apply_damage(result)
+
+
+## Damage is applied right here for now (single player). With the network phase this moves to the
+## server, which will own every hit and only tell clients the outcome.
+func _apply_damage(result: ShotResult) -> void:
+	var zone := result.collider as HitZone
+	if zone == null:
+		return
+	var info := zone.receive_hit(data.damage, result.end)
+	if info != null:
+		hit_confirmed.emit(info)
+
+
+## Back to a full weapon (respawn).
+func refill() -> void:
+	state = WeaponState.new(data)
 
 
 func _trace(camera_origin: Vector3, direction: Vector3) -> ShotResult:

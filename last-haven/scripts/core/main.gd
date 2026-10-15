@@ -1,7 +1,13 @@
+class_name Main
 extends Node3D
 ## Entry point: builds the world, spawns the local player and the debug overlay.
 
 const PLAYER_SCENE: PackedScene = preload("res://scenes/characters/player.tscn")
+## Seconds between dying and reappearing at the spawn point.
+const RESPAWN_DELAY := 2.0
+
+var _map: GreyboxMap
+var _player: PlayerController
 
 
 func _ready() -> void:
@@ -9,25 +15,31 @@ func _ready() -> void:
 	InputActions.register()
 	_add_environment()
 
-	var map := GreyboxMap.new()
-	map.name = "Map"
-	add_child(map)
+	_map = GreyboxMap.new()
+	_map.name = "Map"
+	add_child(_map)
 
-	var player := PLAYER_SCENE.instantiate() as PlayerController
-	player.name = "Player"
+	_player = PLAYER_SCENE.instantiate() as PlayerController
+	_player.name = "Player"
 	# Placed before entering the tree so the camera rig starts at the right spot.
-	player.transform = map.get_spawn_transform()
-	add_child(player)
+	_player.transform = _map.get_spawn_transform()
+	add_child(_player)
+	_player.health.died.connect(_on_player_died)
 
 	var hud := Hud.new()
 	hud.name = "Hud"
-	hud.target = player
+	hud.target = _player
 	add_child(hud)
 
 	var overlay := DebugOverlay.new()
 	overlay.name = "DebugOverlay"
-	overlay.target = player
+	overlay.target = _player
 	add_child(overlay)
+
+
+func _on_player_died() -> void:
+	await get_tree().create_timer(RESPAWN_DELAY).timeout
+	_player.respawn(_map.get_spawn_transform())
 
 
 func _add_environment() -> void:

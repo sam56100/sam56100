@@ -16,6 +16,7 @@ const AIM := &"aim"
 const FIRE := &"fire"
 const RELOAD := &"reload"
 const SHOULDER_SWAP := &"shoulder_swap"
+const DEBUG_DAMAGE := &"debug_damage"
 
 
 static func register() -> void:
@@ -30,6 +31,8 @@ static func register() -> void:
 	_bind_key(SHOULDER_SWAP, KEY_V)
 	_bind_mouse(AIM, MOUSE_BUTTON_RIGHT)
 	_bind_mouse(FIRE, MOUSE_BUTTON_LEFT)
+	if OS.is_debug_build():
+		_bind_key(DEBUG_DAMAGE, KEY_K)
 
 
 static func _bind_key(action: StringName, physical_keycode: Key) -> void:
