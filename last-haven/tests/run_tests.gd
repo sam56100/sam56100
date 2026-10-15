@@ -38,6 +38,10 @@ func _process(_delta: float) -> bool:
 
 
 func _run_all() -> void:
+	# Nodes added to the root during the very first instant do not receive _ready() yet, which
+	# made the first test of a run behave differently from the others. Let the tree settle first.
+	await process_frame
+	await physics_frame
 	var filter := ""
 	var user_args := OS.get_cmdline_user_args()
 	if not user_args.is_empty():

@@ -19,6 +19,12 @@ Document vivant : il décrit ce qui **existe**, pas ce qui est prévu (le prévu
 | `scripts/player/player_controller.gd` | `CharacterBody3D` : marche / sprint / accroupi / saut, orientation du corps, test de place pour se relever |
 | `scripts/player/camera_rig.gd` | Caméra épaule : souris, tangage borné, `SpringArm3D` anti-traversée de murs |
 | `scripts/player/movement_config.gd` + `data/player/movement_default.tres` | Vitesses, accélérations, gravité, tailles |
+| `scripts/combat/weapon_data.gd` + `data/weapons/assault_rifle.tres` | Caractéristiques d'une arme (dégâts, cadence, chargeur, dispersion, recul) |
+| `scripts/combat/weapon_state.gd` | Logique d'arme **pure** (munitions, cadence, rechargement, dispersion), sans nœud ni physique : déterministe et testable |
+| `scripts/combat/weapon_controller.gd` | Transforme l'intention en tirs : rayon caméra puis rayon depuis le canon (la balle ne traverse pas ce que la caméra survole) |
+| `scripts/combat/shot_effects.gd` | Tracé et impact **purement visuels** |
+| `scripts/ui/hud.gd`, `scripts/ui/crosshair.gd` | HUD (muet : il lit l'état du joueur) et réticule dynamique |
+| `scripts/core/localization.gd` | Textes français (clés anglaises dans le code, `tr()`) |
 | `scripts/world/greybox_map.gd` | Arène de test 60×60 m : couvertures basses/hautes, poutre basse, rampe + plateforme, caisses |
 | `scripts/ui/debug_overlay.gd` | Overlay F3 (FPS, vitesse, état, position, version de Godot) |
 | `tests/` | Runner maison (`run_tests.gd`), `TestCase`, chargement de tout le projet (`smoke_load.gd`), tests de physique |
@@ -42,6 +48,7 @@ clavier/souris ──► PlayerController._read_local_input() ──► InputFra
 
 - **Runner maison plutôt que GUT** : GUT n'était ni téléchargeable ni vérifiable dans l'environnement de développement initial, et le runner (≈ 100 lignes) n'a aucune dépendance. Réévaluable si on a besoin de doublures/paramétrage.
 - Les tests de mouvement utilisent la **vraie scène joueur** et la vraie physique de Godot (headless, `--fixed-fps 60`).
+- Le lanceur attend une image avant de commencer : au tout premier instant, les nœuds ajoutés à la racine n'ont pas encore reçu `_ready()`, ce qui faisait échouer le premier test d'un processus (corrigé, chaque suite passe aussi seule).
 - Un chien de garde (1800 images par test) transforme un test bloqué en échec explicite.
 - `check.py` considère comme échec toute ligne `SCRIPT ERROR`, `Parse Error`, `ERROR:` ou `WARNING:` dans la sortie de Godot, même si le code de sortie est 0.
 

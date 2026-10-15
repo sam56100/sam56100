@@ -40,6 +40,8 @@ fonctionner, mais si quelque chose casse, note la version exacte (elle s'affiche
 | Sprint | **Maj** (en avançant) |
 | S'accroupir (bascule) | **C** |
 | Viser (zoom, déplacement ralenti) | **Clic droit** maintenu |
+| Tirer | **Clic gauche** (maintenu : tir automatique) |
+| Recharger | **R** (rechargement automatique quand le chargeur est vide) |
 | Changer d'épaule (caméra) | **V** |
 | Sauter | **Espace** |
 | Overlay de debug (FPS, vitesse, état) | **F3** |

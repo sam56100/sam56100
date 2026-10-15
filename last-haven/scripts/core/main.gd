@@ -5,6 +5,7 @@ const PLAYER_SCENE: PackedScene = preload("res://scenes/characters/player.tscn")
 
 
 func _ready() -> void:
+	Localization.setup()
 	InputActions.register()
 	_add_environment()
 
@@ -17,6 +18,11 @@ func _ready() -> void:
 	# Placed before entering the tree so the camera rig starts at the right spot.
 	player.transform = map.get_spawn_transform()
 	add_child(player)
+
+	var hud := Hud.new()
+	hud.name = "Hud"
+	hud.target = player
+	add_child(hud)
 
 	var overlay := DebugOverlay.new()
 	overlay.name = "DebugOverlay"

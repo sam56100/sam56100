@@ -13,6 +13,8 @@ const SPRINT := &"sprint"
 const JUMP := &"jump"
 const CROUCH := &"crouch"
 const AIM := &"aim"
+const FIRE := &"fire"
+const RELOAD := &"reload"
 const SHOULDER_SWAP := &"shoulder_swap"
 
 
@@ -24,8 +26,10 @@ static func register() -> void:
 	_bind_key(SPRINT, KEY_SHIFT)
 	_bind_key(JUMP, KEY_SPACE)
 	_bind_key(CROUCH, KEY_C)
+	_bind_key(RELOAD, KEY_R)
 	_bind_key(SHOULDER_SWAP, KEY_V)
 	_bind_mouse(AIM, MOUSE_BUTTON_RIGHT)
+	_bind_mouse(FIRE, MOUSE_BUTTON_LEFT)
 
 
 static func _bind_key(action: StringName, physical_keycode: Key) -> void:

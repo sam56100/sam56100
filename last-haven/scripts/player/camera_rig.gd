@@ -109,6 +109,11 @@ func get_camera() -> Camera3D:
 	return _camera
 
 
+## The ray through the crosshair (screen centre), recoil included.
+func get_aim_ray() -> AimRay:
+	return AimRay.create(_camera.global_position, -_camera.global_transform.basis.z)
+
+
 func _look(motion: InputEventMouseMotion) -> void:
 	var sensitivity := mouse_sensitivity * (aim_sensitivity_scale if _aiming else 1.0)
 	yaw -= motion.relative.x * sensitivity

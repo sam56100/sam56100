@@ -13,14 +13,20 @@ enum Stance { STANDING, CROUCHING }
 const _MOVE_DEADZONE := 0.1
 const _STAND_PROBE_MARGIN := 0.05
 const _CAMERA_HEIGHT_RATIO := 0.88
+## Muzzle / gun height as a fraction of the body height (standing 1.8 m -> 1.3 m).
+const _MUZZLE_HEIGHT_RATIO := 0.72
+const _MUZZLE_OFFSET := Vector2(0.28, -0.75)
 
 @export var config: MovementConfig
 
 ## When set, used instead of the local keyboard (tests, future network input).
 var input_override: InputFrame = null
 var stance: Stance = Stance.STANDING
+var weapon: WeaponController
 
 var _stand_probe: CapsuleShape3D
+var _muzzle: Marker3D
+var _gun_mesh: MeshInstance3D
 
 @onready var _collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var _body_mesh: Node3D = $Body
@@ -34,6 +40,7 @@ func _ready() -> void:
 	_stand_probe = CapsuleShape3D.new()
 	_stand_probe.radius = config.radius
 	_stand_probe.height = config.stand_height - 2.0 * _STAND_PROBE_MARGIN
+	_create_weapon()
 	_apply_stance_shape()
 
 
@@ -51,10 +58,15 @@ func simulate(frame: InputFrame, delta: float) -> void:
 	_face(frame, wish_direction, delta)
 	_camera_rig.set_aiming(frame.aim_pressed)
 	move_and_slide()
+	weapon.tick(frame, delta)
 
 
 func horizontal_speed() -> float:
 	return Vector2(velocity.x, velocity.z).length()
+
+
+func get_camera() -> Camera3D:
+	return _camera_rig.get_camera()
 
 
 func _read_local_input() -> InputFrame:
@@ -72,11 +84,14 @@ func _read_local_input() -> InputFrame:
 	# Clicks only count while the mouse is captured, so the click that recaptures it is not a shot.
 	var mouse_captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
 	frame.aim_pressed = mouse_captured and Input.is_action_pressed(InputActions.AIM)
+	frame.fire_pressed = mouse_captured and Input.is_action_pressed(InputActions.FIRE)
+	frame.reload_pressed = Input.is_action_just_pressed(InputActions.RELOAD)
 	return frame
 
 
 func _wants_sprint(frame: InputFrame) -> bool:
-	return frame.sprint and frame.move.y > _MOVE_DEADZONE and not frame.aim_pressed
+	var shooting := frame.aim_pressed or frame.fire_pressed
+	return frame.sprint and frame.move.y > _MOVE_DEADZONE and not shooting
 
 
 ## Returns true if the stance changed this tick.
@@ -134,8 +149,8 @@ func _apply_vertical(frame: InputFrame, delta: float, allow_jump: bool) -> void:
 
 
 func _face(frame: InputFrame, wish_direction: Vector3, delta: float) -> void:
-	if frame.aim_pressed:
-		# Aiming: the body squares up to where the camera points (strafing stance).
+	if frame.aim_pressed or frame.fire_pressed:
+		# Aiming or shooting: the body squares up to where the camera points (strafing stance).
 		rotation.y = lerp_angle(rotation.y, frame.aim_yaw, 1.0 - exp(-config.aim_turn_rate * delta))
 		return
 	if wish_direction.length_squared() < _MOVE_DEADZONE * _MOVE_DEADZONE:
@@ -181,3 +196,34 @@ func _apply_stance_shape() -> void:
 	_body_mesh.scale.y = height / config.stand_height
 	_body_mesh.position.y = height * 0.5
 	_camera_rig.target_height = height * _CAMERA_HEIGHT_RATIO
+	var muzzle_height := height * _MUZZLE_HEIGHT_RATIO
+	_muzzle.position = Vector3(_MUZZLE_OFFSET.x, muzzle_height, _MUZZLE_OFFSET.y)
+	_gun_mesh.position = Vector3(_MUZZLE_OFFSET.x, muzzle_height - 0.05, _MUZZLE_OFFSET.y * 0.55)
+
+
+func _create_weapon() -> void:
+	_muzzle = Marker3D.new()
+	_muzzle.name = "Muzzle"
+	add_child(_muzzle)
+
+	var gun_box := BoxMesh.new()
+	gun_box.size = Vector3(0.07, 0.12, 0.7)
+	var gun_material := StandardMaterial3D.new()
+	gun_material.albedo_color = Color(0.12, 0.12, 0.13)
+	gun_box.material = gun_material
+	_gun_mesh = MeshInstance3D.new()
+	_gun_mesh.name = "GunMesh"
+	_gun_mesh.mesh = gun_box
+	add_child(_gun_mesh)
+
+	weapon = WeaponController.new()
+	weapon.name = "Weapon"
+	add_child(weapon)
+	weapon.setup(self, _muzzle)
+	weapon.aim_ray_provider = _camera_rig.get_aim_ray
+	weapon.recoil_kick.connect(_camera_rig.add_recoil)
+	weapon.shot_fired.connect(_on_shot_fired)
+
+
+func _on_shot_fired(result: ShotResult) -> void:
+	ShotEffects.spawn(get_parent(), result)
