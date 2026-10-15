@@ -135,10 +135,11 @@ func _read_local_input() -> InputFrame:
 	frame.sprint = Input.is_action_pressed(InputActions.SPRINT)
 	frame.jump_pressed = Input.is_action_just_pressed(InputActions.JUMP)
 	frame.crouch_toggle_pressed = Input.is_action_just_pressed(InputActions.CROUCH)
-	# Clicks only count while the mouse is captured, so the click that recaptures it is not a shot.
-	var mouse_captured := Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
-	frame.aim_pressed = mouse_captured and Input.is_action_pressed(InputActions.AIM)
-	frame.fire_pressed = mouse_captured and Input.is_action_pressed(InputActions.FIRE)
+	# Clicks only count while the game owns the mouse, so the click that takes it back after Esc
+	# is not a shot.
+	var clicks_ok := _camera_rig.accepts_gameplay_clicks()
+	frame.aim_pressed = clicks_ok and Input.is_action_pressed(InputActions.AIM)
+	frame.fire_pressed = clicks_ok and Input.is_action_pressed(InputActions.FIRE)
 	frame.reload_pressed = Input.is_action_just_pressed(InputActions.RELOAD)
 	frame.interact_held = Input.is_action_pressed(InputActions.INTERACT)
 	frame.craft_menu_held = Input.is_action_pressed(InputActions.CRAFT_MENU)

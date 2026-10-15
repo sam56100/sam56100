@@ -1,6 +1,6 @@
 # LAST HAVEN — Suivi du projet
 
-Dernière mise à jour : 2026-10-15 · Phase courante : **Phase 1 — jalons 1.0 et 1.1 écrits, en attente de ton playtest**
+Dernière mise à jour : 2026-10-15 · Phase courante : **Phase 1 entièrement écrite (jalons 1.0 à 1.7), en attente de ton playtest ; 1.8 préparé**
 
 ## Légende des statuts
 
@@ -16,7 +16,7 @@ Dernière mise à jour : 2026-10-15 · Phase courante : **Phase 1 — jalons 1.0
 
 ## Fonctionnalités validées (jouées)
 
-_Aucune pour l'instant._ Le jalon 1.1 attend ton playtest (voir la check-list du README).
+_Aucune pour l'instant._ Toute la Phase 1 attend ton playtest (check-list du README).
 
 ## Phase 0 — Mise en place
 
@@ -42,8 +42,8 @@ _Aucune pour l'instant._ Le jalon 1.1 attend ton playtest (voir la check-list du
 | 1.4 | Santé et dégâts par zone (tête ×2, torse ×1, membres ×0,75), cibles d'entraînement (6 dans l'arène) avec chute et réapparition, chiffres de dégâts, marqueur de touche, mort et réapparition du joueur, barre de vie | 🟧 **non joué** | 27 nouveaux tests (88 au total) : calcul de dégâts, santé (plafonds, mort unique), tirs réels sur tête/torse/jambes, nombre de coups pour tuer (torse 6, tête 3, membres 8), cible morte non touchable puis réapparue, joueur mort immobile, réapparition au point de départ sur la vraie scène principale. **Un vrai bug trouvé et corrigé par les tests** (une cible pouvait se recoucher après sa réapparition). **À juger en jouant : la durée pour tuer (≈ 0,6 s au torse à pleine cadence), la lisibilité des zones et des chiffres.** Le calcul des dégâts se fait encore localement : il passera côté serveur en Phase 2. |
 | 1.5 | Caisses de loot (6 dans l'arène, dont 1 sur la plateforme), les 6 composants définis (Alcool, Chiffon, Lame, Adhésif, Explosif, Sucre), 3 d'entre eux dans les caisses en Phase 1, ouverture en maintenant E, barre des composants, invite et message de butin en français | 🟧 **non joué** | 30 nouveaux tests (115→117 au total avec les corrections) : table de loot pondérée et reproductible, inventaire (tout-ou-rien), action chronométrée, vraies ouvertures dans le moteur physique (portée, annulation au relâchement / en s'éloignant / en tirant, une seule action à la fois, caisse vide puis regarnie, caisse la plus proche, joueur mort), HUD. Défauts injectés tous détectés. **À juger en jouant : la quantité de butin (2 à 4 par caisse), la durée d'ouverture, la lisibilité des caisses et du HUD.** Tests de la souris de la caméra qui ne testaient rien en headless : réécrits. |
 | 1.6 | Crafting compact (Tab + numéro), recette Chiffon + Alcool → kit de soin (1,5 s, interruptible), utilisation du kit (H, 1,2 s, +60 PV plafonné), menu et compteurs en français | 🟧 **non joué** | 28 nouveaux tests (143 au total) dont le **scénario complet de la Phase 1** : se blesser, ouvrir deux caisses, fabriquer, se soigner. Composants consommés seulement à la fin (une fabrication interrompue ne coûte rien) ; interruptions par sprint / tir / saut / dégâts ; une seule action à la fois ; joueur mort. 4 défauts injectés tous détectés. **À juger en jouant : les durées, le menu compact (une liste, pas encore un cercle : il n'y a qu'une recette), la lisibilité.** |
-| 1.7 | HUD | ⬜ | |
-| 1.8 | Correctifs, build `.exe`, gate de fun | ⬜ | |
+| 1.7 | HUD complet : santé (barre), munitions et rechargement, réticule dynamique, marqueur de touche, 6 composants, invite et progression d'action, menu de fabrication, kits de soin, message de butin, bannière « Éliminé », tout en français | 🟧 **non joué** | Construit au fil des jalons 1.3 à 1.6 et testé avec eux (≈ 25 tests de HUD sur un vrai joueur). **À juger en jouant : la lisibilité, la taille, les positions, les couleurs.** |
+| 1.8 | Correctifs, build `.exe`, gate de fun | 🟨 préparé | Préréglage d'export Windows fourni (`export_presets.cfg`, **jamais exécuté**, nécessite les modèles d'exportation de Godot sur ton PC). Le « gate de fun » dépend de ton playtest (check-list du README). |
 
 ## Phases suivantes
 

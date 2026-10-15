@@ -3,8 +3,9 @@
 Prototype de TPS tactique PvP à la troisième personne (Godot 4, GDScript).
 Plan complet : [`docs/PLAN_INITIAL.md`](docs/PLAN_INITIAL.md) · État d'avancement : [`docs/SUIVI_PROJET.md`](docs/SUIVI_PROJET.md).
 
-**État actuel : Phase 1, jalons 1.0 et 1.1** — une arène de test et un personnage qui se déplace.
-Pas encore de tir, de loot ni de réseau.
+**État actuel : Phase 1 (jeu solo) entièrement écrite, en attente de ton playtest** — une arène de test où l'on se
+déplace, vise, tire sur des cibles, ouvre des caisses, fabrique un kit de soin et se soigne. Pas encore de réseau
+(Phase 2).
 
 ## Récupérer le projet sur ton PC (à faire AVANT d'ouvrir Godot)
 
@@ -50,14 +51,24 @@ fonctionner, mais si quelque chose casse, note la version exacte (elle s'affiche
 | Sauter | **Espace** |
 | Overlay de debug (FPS, vitesse, état) | **F3** |
 
-## À tester (jalon 1.1) et à me rapporter
+## À tester (Phase 1) et à me rapporter
 
-- Le déplacement a-t-il du poids sans être lent ? (marche / sprint / accroupi, démarrage et arrêt)
-- La caméra par-dessus l'épaule est-elle lisible ? Traverse-t-elle les murs ?
-- Passer sous la poutre rouge : debout c'est bloqué, accroupi ça passe.
-- Monter la rampe verte jusqu'à la plateforme.
-- Y a-t-il des saccades ? (indique ton FPS et ta config)
-- Colle-moi le contenu de l'overlay **F3** si quelque chose te semble faux.
+Joue 10 minutes en suivant cette liste, puis dis-moi simplement « OK » ou ce qui ne va pas (avec la capture de l'overlay **F3** et du panneau **Sortie** de Godot s'il y a du texte rouge ou jaune).
+
+1. **Déplacement** : marcher, sprinter (Maj), s'accroupir (C), sauter, démarrer/s'arrêter. Du poids sans lenteur ?
+2. **Caméra** : souris fluide ? Clic droit (zoom de visée), **V** (changer d'épaule). Traverse-t-elle les murs ?
+3. **Tir** : clic gauche maintenu. Le recul, la dispersion, le réticule qui s'ouvre, le tracé jaune. **R** pour recharger.
+4. **Cibles** (6 mannequins) : tête = 36, torse = 18, membres = 14, chiffres flottants, croix blanche à la touche (rouge à la mort). Elles tombent et reviennent après 3 s. Tuer au torse prend-il le bon temps (≈ 0,6 s) ?
+5. **Caisses** (6, dont une sur la plateforme verte) : s'approcher, **E** maintenu (≈ 0,8 s). Message « +1 Chiffon … ». La caisse se regarnit après 25 s.
+6. **Fabrication** : maintenir **Tab**, appuyer sur **1** (Kit de soin = 1 Chiffon + 1 Alcool, ≈ 1,5 s). Interrompu si tu cours, tires, sautes ou es touché.
+7. **Soin** : **K** pour te blesser (-30), puis **H** pour utiliser le kit (≈ 1,2 s, +60 PV).
+8. **Mort** : tombe à 0 PV (K plusieurs fois) : « Éliminé », retour au départ après 2 s.
+9. **Poutre rouge** (debout bloqué, accroupi on passe) et **rampe verte** jusqu'à la plateforme.
+10. **Fluidité** : des saccades ? Quels FPS (overlay F3) ?
+
+## Produire un .exe jouable (jalon 1.8, à faire chez toi)
+
+Un préréglage d'export Windows est fourni (`export_presets.cfg`, **non testé**). Dans Godot : *Projet → Exporter…* ; si Godot demande les modèles d'exportation, clique sur *Gérer les modèles d'exportation → Télécharger et installer*, puis *Exporter le projet* vers `export/LastHaven.exe`. Dis-moi ce qui s'affiche s'il y a une erreur.
 
 ## Vérifications automatiques
 

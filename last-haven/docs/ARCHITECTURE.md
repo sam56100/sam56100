@@ -1,4 +1,4 @@
-# LAST HAVEN — Architecture (état : jalons 1.0 / 1.1)
+# LAST HAVEN — Architecture (état : Phase 1 écrite, jalons 1.0 à 1.7)
 
 Document vivant : il décrit ce qui **existe**, pas ce qui est prévu (le prévu est dans `PLAN_INITIAL.md`).
 
@@ -64,3 +64,5 @@ clavier/souris ──► PlayerController._read_local_input() ──► InputFra
 - Pas de montée de marches ni de franchissement d'obstacles (prévu avec le système de couverture, Phase 3).
 - Le personnage est une capsule de substitution avec un « nez » pour voir l'orientation. Aucune animation.
 - Aucun son. Aucun réseau.
+- Les dégâts, le butin, le crafting et les soins sont calculés **localement** (solo). En Phase 2 ils passent côté serveur ; les entrées passent déjà par `InputFrame`, ce qui prépare ce changement.
+- La propriété de la souris (`CameraRig.gameplay_input`) est suivie par le jeu et non relue depuis le moteur (la fenêtre de jeu intégrée à l'éditeur et le mode headless ne la rapportent pas toujours).

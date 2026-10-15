@@ -33,6 +33,11 @@ extends Node3D
 @export var recoil_recovery_speed: float = 9.0
 @export var max_recoil_degrees: float = 12.0
 
+## True while the game owns the mouse. Esc releases it, a click takes it back. Tracked here rather
+## than read back from the engine, because the embedded game window of the editor (and headless
+## runs) do not always report the captured state reliably.
+var gameplay_input: bool = true
+
 ## Rotation around the Y axis, radians. 0 looks toward -Z.
 var yaw: float = 0.0
 var pitch: float = 0.0
@@ -44,6 +49,9 @@ var _current_height: float = 1.6
 var _aiming: bool = false
 var _recoil_pitch: float = 0.0
 var _recoil_yaw: float = 0.0
+## The click that takes the mouse back must not also be a shot, so clicks are ignored until the
+## button is released.
+var _swallow_click: bool = false
 
 @onready var _pitch_pivot: Node3D = $PitchPivot
 @onready var _arm: SpringArm3D = $PitchPivot/SpringArm3D
@@ -60,7 +68,7 @@ func _ready() -> void:
 	_camera.fov = hip_fov
 	_apply_rotation()
 	global_position = _target.global_position + Vector3.UP * _current_height
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	take_mouse()
 
 
 func _physics_process(delta: float) -> void:
@@ -74,18 +82,36 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		look((event as InputEventMouseMotion).relative)
-	elif (
-		event is InputEventMouseButton
-		and (event as InputEventMouseButton).pressed
-		and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED
-	):
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if event is InputEventMouseMotion:
+		if gameplay_input:
+			look((event as InputEventMouseMotion).relative)
+	elif event is InputEventMouseButton:
+		if not (event as InputEventMouseButton).pressed:
+			_swallow_click = false
+		elif not gameplay_input:
+			take_mouse()
+			_swallow_click = true
 	elif event.is_action_pressed(&"ui_cancel"):
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		release_mouse()
 	elif event.is_action_pressed(InputActions.SHOULDER_SWAP):
 		swap_shoulder()
+
+
+## Gives the mouse back to the player (Esc).
+func release_mouse() -> void:
+	gameplay_input = false
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+## Captures the mouse for gameplay.
+func take_mouse() -> void:
+	gameplay_input = true
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+## False while the mouse is released, and for the click that takes it back.
+func accepts_gameplay_clicks() -> bool:
+	return gameplay_input and not _swallow_click
 
 
 ## Zoom in / out. Called by the player every tick from its input.
