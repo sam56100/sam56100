@@ -41,6 +41,7 @@ fonctionner, mais si quelque chose casse, note la version exacte (elle s'affiche
 | S'accroupir (bascule) | **C** |
 | Viser (zoom, déplacement ralenti) | **Clic droit** maintenu |
 | Tirer | **Clic gauche** (maintenu : tir automatique) |
+| Ouvrir une caisse | **E** maintenu (≈ 0,8 s) près d'une caisse |
 | Recharger | **R** (rechargement automatique quand le chargeur est vide) |
 | Changer d'épaule (caméra) | **V** |
 | Se blesser (test, version de développement) | **K** (-30 PV) |

@@ -24,6 +24,8 @@ Document vivant : il décrit ce qui **existe**, pas ce qui est prévu (le prévu
 | `scripts/combat/weapon_controller.gd` | Transforme l'intention en tirs : rayon caméra puis rayon depuis le canon (la balle ne traverse pas ce que la caméra survole) |
 | `scripts/combat/health_component.gd`, `damage_zone.gd`, `damage_calculator.gd`, `hit_info.gd` | Points de vie, zones du corps et règle unique de calcul des dégâts |
 | `scripts/combat/hit_zone.gd`, `training_dummy.gd`, `damage_number.gd` | Volumes de touche simples (tête / torse / membres, couche « hitboxes »), cible d'entraînement, chiffres flottants |
+| `scripts/loot/*` + `data/loot/crate_basic.tres` | Les 6 composants, table de loot pondérée (donnée), inventaire sans poids, action chronométrée, objets interactifs et caisse |
+| `scripts/player/player_interactor.gd` | Trouve l'objet le plus proche et gère l'action « maintenir pour utiliser » (une seule action à la fois) |
 | `scripts/combat/shot_effects.gd` | Tracé et impact **purement visuels** |
 | `scripts/ui/hud.gd`, `scripts/ui/crosshair.gd` | HUD (muet : il lit l'état du joueur) et réticule dynamique |
 | `scripts/core/localization.gd` | Textes français (clés anglaises dans le code, `tr()`) |
@@ -51,6 +53,7 @@ clavier/souris ──► PlayerController._read_local_input() ──► InputFra
 - **Runner maison plutôt que GUT** : GUT n'était ni téléchargeable ni vérifiable dans l'environnement de développement initial, et le runner (≈ 100 lignes) n'a aucune dépendance. Réévaluable si on a besoin de doublures/paramétrage.
 - Les tests de mouvement utilisent la **vraie scène joueur** et la vraie physique de Godot (headless, `--fixed-fps 60`).
 - Le lanceur attend une image avant de commencer : au tout premier instant, les nœuds ajoutés à la racine n'ont pas encore reçu `_ready()`, ce qui faisait échouer le premier test d'un processus (corrigé, chaque suite passe aussi seule).
+- Un test qui n'exécute aucune vérification est un échec : c'est à quoi ressemble, vu de l'extérieur, une erreur de script au milieu d'un test (le lanceur la comptait « réussie » avant ce garde-fou).
 - Un chien de garde (1800 images par test) transforme un test bloqué en échec explicite.
 - `check.py` considère comme échec toute ligne `SCRIPT ERROR`, `Parse Error`, `ERROR:` ou `WARNING:` dans la sortie de Godot, même si le code de sortie est 0.
 

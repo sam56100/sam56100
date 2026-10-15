@@ -15,6 +15,7 @@ const CROUCH := &"crouch"
 const AIM := &"aim"
 const FIRE := &"fire"
 const RELOAD := &"reload"
+const INTERACT := &"interact"
 const SHOULDER_SWAP := &"shoulder_swap"
 const DEBUG_DAMAGE := &"debug_damage"
 
@@ -28,6 +29,7 @@ static func register() -> void:
 	_bind_key(JUMP, KEY_SPACE)
 	_bind_key(CROUCH, KEY_C)
 	_bind_key(RELOAD, KEY_R)
+	_bind_key(INTERACT, KEY_E)
 	_bind_key(SHOULDER_SWAP, KEY_V)
 	_bind_mouse(AIM, MOUSE_BUTTON_RIGHT)
 	_bind_mouse(FIRE, MOUSE_BUTTON_LEFT)

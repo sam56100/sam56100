@@ -8,6 +8,8 @@ extends Node3D
 ## (stand blocked, crouch passes), a ramp up to a platform, and scattered crates.
 
 const ARENA_HALF_SIZE := 30.0
+## Height of the raised platform's top surface (8 m ramp at 15 degrees).
+const PLATFORM_TOP := 2.07
 const WALL_HEIGHT := 4.0
 const WALL_THICKNESS := 1.0
 
@@ -36,6 +38,7 @@ func _ready() -> void:
 	_build_ramp_and_platform()
 	_build_crates()
 	_build_training_range()
+	_build_loot_crates()
 
 
 ## Where the player starts: south edge of the arena, facing north (-Z).
@@ -133,6 +136,23 @@ func _build_training_range() -> void:
 		dummy.name = "Dummy%d" % (i + 1)
 		dummy.position = spots[i] as Vector3
 		add_child(dummy)
+
+
+## Supply crates: some in the open near the spawn, one up on the platform as a reward.
+func _build_loot_crates() -> void:
+	var spots := [
+		Vector3(3.5, 0.0, 19.5),
+		Vector3(-6.5, 0.0, 20.5),
+		Vector3(-16.0, 0.0, 12.0),
+		Vector3(12.0, 0.0, 4.0),
+		Vector3(-24.0, 0.0, -2.5),
+		Vector3(16.0, PLATFORM_TOP, -14.0),
+	]
+	for i in spots.size():
+		var crate := LootCrate.new()
+		crate.name = "LootCrate%d" % (i + 1)
+		crate.position = spots[i] as Vector3
+		add_child(crate)
 
 
 func _add_box(

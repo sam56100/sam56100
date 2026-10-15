@@ -88,30 +88,30 @@ func test_recoil_is_capped() -> void:
 
 
 func test_mouse_look_turns_and_clamps_pitch() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-		# Some headless display servers refuse to capture the mouse: nothing to test then.
-		return
-	var motion := InputEventMouseMotion.new()
-	motion.relative = Vector2(100.0, 0.0)
-	_rig._unhandled_input(motion)
+	_rig.look(Vector2(100.0, 0.0))
 	assert_almost_eq(_rig.yaw, -100.0 * _rig.mouse_sensitivity, 0.0001)
-	motion.relative = Vector2(0.0, -100000.0)
-	_rig._unhandled_input(motion)
+	_rig.look(Vector2(0.0, -100000.0))
 	assert_almost_eq(_rig.pitch, deg_to_rad(_rig.max_pitch_degrees), 0.0001)
-	motion.relative = Vector2(0.0, 100000.0)
-	_rig._unhandled_input(motion)
+	_rig.look(Vector2(0.0, 100000.0))
 	assert_almost_eq(_rig.pitch, deg_to_rad(_rig.min_pitch_degrees), 0.0001)
 
 
+func test_moving_the_mouse_right_turns_the_view_right() -> void:
+	_rig.look(Vector2(50.0, 0.0))
+	assert_true(_rig.yaw < 0.0, "Godot yaw decreases when turning right")
+	assert_true(_rig.get_aim_ray().direction.x > 0.0, "the camera now looks toward +X")
+
+
+func test_moving_the_mouse_up_looks_up() -> void:
+	var before := _rig.get_aim_ray().direction.y
+	_rig.look(Vector2(0.0, -50.0))
+	assert_true(_rig.get_aim_ray().direction.y > before)
+
+
 func test_aiming_lowers_mouse_sensitivity() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-		return
-	_rig.set_aiming(true)
-	var motion := InputEventMouseMotion.new()
-	motion.relative = Vector2(100.0, 0.0)
-	_rig._unhandled_input(motion)
+	_set_aim(true)
+	await _frames(2)
+	_rig.look(Vector2(100.0, 0.0))
 	var expected := -100.0 * _rig.mouse_sensitivity * _rig.aim_sensitivity_scale
 	assert_almost_eq(_rig.yaw, expected, 0.0001)
 

@@ -11,6 +11,15 @@ const FRENCH: Dictionary = {
 	"Reloading": "Rechargement",
 	"Empty": "Vide",
 	"Eliminated": "Éliminé",
+	"Crate": "Caisse",
+	"Hold [E] to open": "Maintenir [E] pour ouvrir",
+	"Opening": "Ouverture",
+	"Alcohol": "Alcool",
+	"Rag": "Chiffon",
+	"Blade": "Lame",
+	"Adhesive": "Adhésif",
+	"Explosive": "Explosif",
+	"Sugar": "Sucre",
 }
 
 static var _installed: bool = false

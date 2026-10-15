@@ -64,10 +64,15 @@ func _run_all() -> void:
 		for method_name in _test_methods(suite):
 			total += 1
 			suite.failures.clear()
+			suite.assertions = 0
 			_frames_in_current_test = 0
 			await suite.before_each()
 			await suite.call(method_name)
 			await suite.after_each()
+			if suite.failures.is_empty() and suite.assertions == 0:
+				suite.fail(
+					"no assertion was executed (the test probably aborted on a script error)"
+				)
 			if suite.failures.is_empty():
 				print("PASS  %s::%s" % [file_name, method_name])
 			else:

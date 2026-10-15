@@ -75,7 +75,7 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		_look(event as InputEventMouseMotion)
+		look((event as InputEventMouseMotion).relative)
 	elif (
 		event is InputEventMouseButton
 		and (event as InputEventMouseButton).pressed
@@ -114,11 +114,12 @@ func get_aim_ray() -> AimRay:
 	return AimRay.create(_camera.global_position, -_camera.global_transform.basis.z)
 
 
-func _look(motion: InputEventMouseMotion) -> void:
+## Turns the view by a mouse movement in pixels (sensitivity and pitch limits applied).
+func look(relative: Vector2) -> void:
 	var sensitivity := mouse_sensitivity * (aim_sensitivity_scale if _aiming else 1.0)
-	yaw -= motion.relative.x * sensitivity
+	yaw -= relative.x * sensitivity
 	pitch = clampf(
-		pitch - motion.relative.y * sensitivity,
+		pitch - relative.y * sensitivity,
 		deg_to_rad(min_pitch_degrees),
 		deg_to_rad(max_pitch_degrees)
 	)

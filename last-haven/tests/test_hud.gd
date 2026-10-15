@@ -135,6 +135,46 @@ func test_hit_marker_flashes_when_a_bullet_hurts_something() -> void:
 	assert_false(_hud.get_crosshair().is_hit_marker_visible(), "the marker is brief")
 
 
+func test_component_bar_shows_counts_and_dims_empty_slots() -> void:
+	_hud.refresh()
+	for type in CraftComponent.all():
+		assert_eq(_hud.get_component_bar().get_count_text(type), "0")
+	_player.inventory.add(CraftComponent.Type.RAG, 3)
+	_player.inventory.add(CraftComponent.Type.ALCOHOL, 1)
+	_hud.refresh()
+	assert_eq(_hud.get_component_bar().get_count_text(CraftComponent.Type.RAG), "3")
+	assert_eq(_hud.get_component_bar().get_count_text(CraftComponent.Type.ALCOHOL), "1")
+	assert_eq(_hud.get_component_bar().get_count_text(CraftComponent.Type.SUGAR), "0")
+
+
+func test_prompt_appears_near_a_crate_and_progress_shows_while_opening() -> void:
+	var crate := LootCrate.new()
+	crate.position = Vector3(0.0, 0.0, -1.5)
+	_world.add_child(crate)
+	await _frames(5)
+	_hud.refresh()
+	assert_eq(_hud.get_prompt_text(), "Maintenir [E] pour ouvrir")
+	_frame.interact_held = true
+	await _frames(20)
+	_hud.refresh()
+	assert_eq(_hud.get_prompt_text(), "", "the prompt gives way to the progress bar")
+	assert_eq(_hud.get_action_text(), "Ouverture")
+	assert_true(_hud.get_action_progress() > 0.0)
+
+
+func test_no_prompt_when_nothing_is_in_range() -> void:
+	_hud.refresh()
+	assert_eq(_hud.get_prompt_text(), "")
+	assert_eq(_hud.get_action_text(), "")
+
+
+func test_a_toast_announces_the_loot_in_french() -> void:
+	_player.collect_loot({CraftComponent.Type.RAG: 2, CraftComponent.Type.ALCOHOL: 1})
+	var toast := _hud.get_toast_text()
+	assert_true(toast.contains("+2 Chiffon"), toast)
+	assert_true(toast.contains("+1 Alcool"), toast)
+
+
 func _frames(count: int) -> void:
 	for i in count:
 		await tree.physics_frame

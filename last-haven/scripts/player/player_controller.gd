@@ -7,6 +7,8 @@ extends CharacterBody3D
 ## (prediction). See docs/ARCHITECTURE.md.
 
 signal stance_changed(new_stance: Stance)
+## Crafting components were added to the inventory (component type -> amount).
+signal loot_collected(loot: Dictionary)
 
 enum Stance { STANDING, CROUCHING }
 
@@ -25,8 +27,12 @@ var input_override: InputFrame = null
 var stance: Stance = Stance.STANDING
 var weapon: WeaponController
 var health: HealthComponent
+var inventory := ComponentInventory.new()
+var interactor: PlayerInteractor
 
 var _stand_probe: CapsuleShape3D
+## Only one timed action (opening, later crafting/healing) can run at a time.
+var _action_owner: Object = null
 var _muzzle: Marker3D
 var _gun_mesh: MeshInstance3D
 
@@ -44,6 +50,7 @@ func _ready() -> void:
 	_stand_probe.height = config.stand_height - 2.0 * _STAND_PROBE_MARGIN
 	_create_health()
 	_create_weapon()
+	_create_interactor()
 	_apply_stance_shape()
 
 
@@ -66,6 +73,7 @@ func simulate(input: InputFrame, delta: float) -> void:
 	_camera_rig.set_aiming(frame.aim_pressed)
 	move_and_slide()
 	weapon.tick(frame, delta)
+	interactor.tick(frame, delta)
 
 
 func horizontal_speed() -> float:
@@ -78,6 +86,25 @@ func get_camera() -> Camera3D:
 
 func is_dead() -> bool:
 	return health.is_dead()
+
+
+## Claims the single "busy" slot. Returns false if another action is already running.
+func try_begin_action(requester: Object) -> bool:
+	if _action_owner != null and _action_owner != requester:
+		return false
+	_action_owner = requester
+	return true
+
+
+func end_action(requester: Object) -> void:
+	if _action_owner == requester:
+		_action_owner = null
+
+
+## Adds loot to the inventory and announces it (HUD toast).
+func collect_loot(loot: Dictionary) -> void:
+	inventory.add_all(loot)
+	loot_collected.emit(loot)
 
 
 ## Brings the player back at full health and ammo, standing, at the given world transform.
@@ -107,6 +134,7 @@ func _read_local_input() -> InputFrame:
 	frame.aim_pressed = mouse_captured and Input.is_action_pressed(InputActions.AIM)
 	frame.fire_pressed = mouse_captured and Input.is_action_pressed(InputActions.FIRE)
 	frame.reload_pressed = Input.is_action_just_pressed(InputActions.RELOAD)
+	frame.interact_held = Input.is_action_pressed(InputActions.INTERACT)
 	frame.debug_damage_pressed = (
 		OS.is_debug_build() and Input.is_action_just_pressed(InputActions.DEBUG_DAMAGE)
 	)
@@ -255,6 +283,13 @@ func _set_dead_pose(dead: bool) -> void:
 
 func _on_hit_confirmed(info: HitInfo) -> void:
 	DamageNumber.spawn(get_parent(), info)
+
+
+func _create_interactor() -> void:
+	interactor = PlayerInteractor.new()
+	interactor.name = "Interactor"
+	add_child(interactor)
+	interactor.setup(self)
 
 
 func _create_weapon() -> void:

@@ -5,6 +5,7 @@ extends CanvasLayer
 const _MARGIN := 24.0
 const _TEXT_COLOR := Color(1.0, 1.0, 1.0)
 const _WARNING_COLOR := Color(1.0, 0.35, 0.3)
+const _TOAST_SECONDS := 2.5
 
 var target: PlayerController
 
@@ -14,6 +15,12 @@ var _status_label: Label
 var _health_bar: HealthBar
 var _health_label: Label
 var _center_label: Label
+var _component_bar: ComponentBar
+var _prompt_label: Label
+var _action_label: Label
+var _action_bar: ActionBar
+var _toast_label: Label
+var _toast_time_left: float = 0.0
 
 
 func _ready() -> void:
@@ -44,12 +51,38 @@ func _ready() -> void:
 	_place(_center_label, -300.0, 300.0, 70.0, 130.0)
 	_center_label.visible = false
 
+	_component_bar = ComponentBar.new()
+	_component_bar.name = "ComponentBar"
+	add_child(_component_bar)
+	_component_bar.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	_place(_component_bar, -200.0, 200.0, -96.0, -_MARGIN)
+
+	_prompt_label = _make_label("PromptLabel", 22, Control.PRESET_CENTER)
+	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(_prompt_label, -300.0, 300.0, 90.0, 124.0)
+
+	_action_label = _make_label("ActionLabel", 18, Control.PRESET_CENTER)
+	_action_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(_action_label, -300.0, 300.0, 126.0, 152.0)
+
+	_action_bar = ActionBar.new()
+	_action_bar.name = "ActionBar"
+	add_child(_action_bar)
+	_action_bar.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	_place(_action_bar, -110.0, 110.0, 156.0, 164.0)
+
+	_toast_label = _make_label("ToastLabel", 24, Control.PRESET_CENTER_TOP)
+	_toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_place(_toast_label, -300.0, 300.0, 70.0, 104.0)
+
 	if target != null:
 		target.weapon.hit_confirmed.connect(_on_hit_confirmed)
+		target.loot_collected.connect(_on_loot_collected)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	refresh()
+	_update_toast(delta)
 
 
 ## Updates every element from the player's current state.
@@ -58,6 +91,8 @@ func refresh() -> void:
 		return
 	_refresh_weapon()
 	_refresh_health()
+	_refresh_interaction()
+	_component_bar.refresh(target.inventory)
 
 
 func get_crosshair() -> Crosshair:
@@ -78,6 +113,26 @@ func get_health_bar() -> HealthBar:
 
 func get_health_text() -> String:
 	return _health_label.text
+
+
+func get_component_bar() -> ComponentBar:
+	return _component_bar
+
+
+func get_prompt_text() -> String:
+	return _prompt_label.text
+
+
+func get_action_text() -> String:
+	return _action_label.text
+
+
+func get_action_progress() -> float:
+	return _action_bar.progress
+
+
+func get_toast_text() -> String:
+	return _toast_label.text if _toast_label.visible else ""
 
 
 func get_center_text() -> String:
@@ -109,6 +164,35 @@ func _refresh_health() -> void:
 	_center_label.visible = health.is_dead()
 	if health.is_dead():
 		_center_label.text = tr("Eliminated")
+
+
+func _refresh_interaction() -> void:
+	var interactor := target.interactor
+	var busy := interactor.is_interacting()
+	_prompt_label.text = tr(interactor.get_prompt()) if interactor.has_target() and not busy else ""
+	_action_label.text = tr("Opening") if busy else ""
+	_action_bar.progress = interactor.progress()
+	_action_bar.visible = busy
+
+
+func _on_loot_collected(loot: Dictionary) -> void:
+	var parts: PackedStringArray = []
+	for type: int in loot:
+		parts.append(
+			"+%d %s" % [loot[type], CraftComponent.display_name(type as CraftComponent.Type)]
+		)
+	_toast_label.text = "   ".join(parts)
+	_toast_label.visible = true
+	_toast_label.modulate.a = 1.0
+	_toast_time_left = _TOAST_SECONDS
+
+
+func _update_toast(delta: float) -> void:
+	if _toast_time_left <= 0.0:
+		_toast_label.visible = false
+		return
+	_toast_time_left -= delta
+	_toast_label.modulate.a = clampf(_toast_time_left / 0.5, 0.0, 1.0)
 
 
 ## Converts a cone half-angle into on-screen pixels for the current camera zoom.
