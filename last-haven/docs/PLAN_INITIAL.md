@@ -153,7 +153,7 @@ Deux niveaux, pour éviter l'ambiguïté du mot « MVP » :
 - Tirer sur une cible applique les bons dégâts selon la zone (**tests unitaires verts**).
 - Ouvrir une caisse prend ≤ 1 s et donne des composants ; fabriquer un soin prend ≈ 1,5–2 s, est interruptible, et rend de la santé.
 - Le HUD affiche santé, munitions, composants.
-- Fréquence d'images stable sur ta machine (seuil à fixer une fois ta config connue).
+- Au moins 60 images/s stables en 1080p sur ta machine (GPU dédié 8 Go de VRAM, environ 32 Go de RAM : le seuil sera relevé si les mesures le permettent).
 
 ### MVP-B — « Supply War jouable » (= fin de Phase 3, version minimale)
 **Contenu :** 1 carte, 1 mode (Supply War), 4v4 sur serveur dédié, 3 armes à feu + 1 mêlée, mise à terre + réanimation, tickets de réapparition, 1 type d'objectif (zone à tenir), crafting de 3 objets (soin, cocktail incendiaire, fumigène), **1** récompense de série (détection à 3 éliminations), score et écran de résultats.
@@ -281,7 +281,7 @@ Un TPS demande beaucoup d'animations : locomotion 8 directions debout et accroup
 | **D4** | Collision joueur↔joueur en MVP | Désactivée (simplifie la prédiction réseau) |
 | **D5** | Sauvegarde du camp | Locale pour le MVP (playtests entre amis) ; côté serveur seulement si ouverture au public |
 | **D6** | Langues | Code, commentaires et identifiants en anglais ; documents et textes du jeu en français, via le système de traduction de Godot dès le début |
-| **D7** | Ta machine | Peux-tu me donner CPU / GPU / RAM ? Ça fixe le budget de rendu et le seuil de FPS |
+| **D7** | Ta machine | ✅ Reçu : GPU dédié 8 Go de VRAM, ≈ 32 Go de RAM, CPU inconnu. Forward+ conservé, seuil de 60 FPS en 1080p. |
 | **D8** | Recettes et composants de départ | Voir ci-dessous |
 
 ### D8 — Proposition de recettes (2 composants chacune, craft rapide)
