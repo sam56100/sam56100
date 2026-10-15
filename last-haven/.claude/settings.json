@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python tools/check.py:*)",
+      "Bash(python3 tools/check.py:*)",
+      "Bash(py tools/check.py:*)",
+      "Bash(gdlint:*)",
+      "Bash(gdformat:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ]
+  }
+}

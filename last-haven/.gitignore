@@ -1,0 +1,24 @@
+# Godot 4 cache and generated data
+.godot/
+.import/
+*.translation
+
+# Exports and builds
+export/
+build/
+*.exe
+*.pck
+*.apk
+
+# Python tooling
+__pycache__/
+*.pyc
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local Claude Code overrides
+.claude/settings.local.json

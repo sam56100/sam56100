@@ -1,0 +1,19 @@
+# Normalise line endings: the whole project is LF (Godot reads LF fine on Windows).
+* text=auto eol=lf
+
+*.gd text eol=lf
+*.tscn text eol=lf
+*.tres text eol=lf
+*.godot text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.json text eol=lf
+
+# Git LFS for binary assets: uncomment once Git LFS is installed and the first
+# model/texture/audio file is added (see docs/ASSETS_LICENSES.md).
+# *.glb filter=lfs diff=lfs merge=lfs -text
+# *.png filter=lfs diff=lfs merge=lfs -text
+# *.jpg filter=lfs diff=lfs merge=lfs -text
+# *.ogg filter=lfs diff=lfs merge=lfs -text
+# *.wav filter=lfs diff=lfs merge=lfs -text
